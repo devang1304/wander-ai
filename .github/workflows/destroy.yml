@@ -35,6 +35,9 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Create Backend Build Directory
+        run: mkdir -p ./backend/build
+
       - name: Terraform Init
         run: terraform init
         working-directory: ./terraform
