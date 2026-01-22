@@ -20,8 +20,12 @@ terraform {
     }
   }
 
-  backend "local" {
-    path = "terraform.tfstate"
+  backend "s3" {
+    bucket         = "wander-ai-tf-state-012918245227"
+    key            = "terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "wander-ai-tf-lock"
+    encrypt        = true
   }
 }
 
