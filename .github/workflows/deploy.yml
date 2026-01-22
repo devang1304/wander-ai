@@ -47,6 +47,9 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       # Backend Deployment via Terraform
+      - name: Create Backend Build Directory
+        run: mkdir -p ./backend/build
+
       - name: Terraform Init
         run: terraform init
         working-directory: ./terraform
