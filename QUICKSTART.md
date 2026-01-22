@@ -9,12 +9,21 @@ Ensure you have the following files:
   OPENAI_API_KEY=sk-...
   ```
 
-## 2. Deploy Backend
+## 2. One-Time Setup
+
+Initialize the remote state infrastructure (S3 + DynamoDB):
+
+```bash
+./terraform/setup_state.sh
+```
+
+## 3. Deploy Backend
 
 Run the automated deployment script. This will use your key and deploy the serverless stack.
 
 ```bash
-./backend/deploy.sh
+cd terraform
+./deploy.sh
 ```
 
 **After success, look for the "Key: TravelApi, Value: https://..." output.**

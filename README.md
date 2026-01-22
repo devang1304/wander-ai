@@ -50,7 +50,15 @@ cp .env.example .env
 # Edit .env and add your OPENAI_API_KEY
 ```
 
-### 2. Deploy Backend Infrastructure
+### 2. One-Time Setup (Remote State)
+
+Initialize the remote backend for Terraform:
+
+```bash
+./terraform/setup_state.sh
+```
+
+### 3. Deploy Backend Infrastructure
 
 ```bash
 cd terraform
@@ -59,7 +67,7 @@ cd terraform
 
 This will:
 
-- ✅ Initialize Terraform
+- ✅ Initialize Terraform with Remote State
 - ✅ Deploy Lambda functions, API Gateway, and DynamoDB
 - ✅ Auto-configure frontend with API endpoint
 
