@@ -4,7 +4,8 @@ resource "random_id" "bucket_suffix" {
 
 # S3 Bucket for Frontend Hosting
 resource "aws_s3_bucket" "frontend_bucket" {
-  bucket = "${var.project_name}-frontend-${random_id.bucket_suffix.hex}"
+  bucket        = "${var.project_name}-frontend-${random_id.bucket_suffix.hex}"
+  force_destroy = true
 }
 
 resource "aws_s3_bucket_website_configuration" "frontend_bucket_website" {
