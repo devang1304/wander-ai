@@ -47,3 +47,4 @@ terraform/lambda_function.zip
 
 # Backend Build Artifacts
 backend/build/
+gh-actions-error-raw.txt
