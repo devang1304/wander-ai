@@ -33,7 +33,4 @@ output "cloudfront_distribution_id" {
   value       = aws_cloudfront_distribution.frontend_distribution.id
 }
 
-output "github_actions_role_arn" {
-  description = "IAM Role ARN for GitHub Actions to use in secrets"
-  value       = aws_iam_role.github_actions.arn
-}
+
