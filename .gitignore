@@ -44,3 +44,6 @@ terraform/tfplan
 terraform/*.tfvars
 !terraform/terraform.tfvars.example
 terraform/lambda_function.zip
+
+# Backend Build Artifacts
+backend/build/
