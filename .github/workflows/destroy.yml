@@ -36,7 +36,9 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Create Backend Build Directory
-        run: mkdir -p ./backend/build
+        run: |
+          mkdir -p ./backend/build
+          touch ./backend/build/dummy.txt
 
       - name: Terraform Init
         run: terraform init
