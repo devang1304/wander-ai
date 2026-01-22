@@ -91,5 +91,10 @@ else
 fi
 
 echo ""
-echo -e "${GREEN}🎉 Full Sack Deployment Complete!${NC}"
-echo -e "   Frontend is live at: ${GREEN}$CLOUDFRONT_URL${NC}"
+echo "==========================================================="
+echo -e "${GREEN}🎉 Full Stack Deployment Complete!${NC}"
+echo "==========================================================="
+echo -e "🌍 ${GREEN}Frontend Application:${NC}  $CLOUDFRONT_URL"
+echo -e "🔌 ${YELLOW}Backend API endpoint:${NC}  $API_URL"
+echo "==========================================================="
+echo ""

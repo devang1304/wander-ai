@@ -99,3 +99,15 @@ jobs:
         run: |
           DIST_ID=$(terraform output -raw cloudfront_distribution_id)
           aws cloudfront create-invalidation --distribution-id $DIST_ID --paths "/*"
+
+      - name: 🚀 Deployment Summary
+        if: github.ref == 'refs/heads/main'
+        working-directory: ./terraform
+        run: |
+          FRONTEND_URL=$(terraform output -raw frontend_url)
+          API_URL=$(terraform output -raw api_endpoint)
+          echo "==========================================================="
+          echo "🎉 Deployment Complete!"
+          echo "🌍 Frontend: $FRONTEND_URL"
+          echo "🔌 Backend:  $API_URL"
+          echo "==========================================================="
