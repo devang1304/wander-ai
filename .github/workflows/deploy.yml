@@ -90,6 +90,9 @@ jobs:
       - name: Invalidate CloudFront
         if: github.ref == 'refs/heads/main'
         working-directory: ./terraform
+      - name: Invalidate CloudFront
+        if: github.ref == 'refs/heads/main'
+        working-directory: ./terraform
         run: |
-          DIST_ID=$(terraform state show aws_cloudfront_distribution.frontend_distribution | grep id | head -1 | awk '{print $3}' | tr -d '"')
+          DIST_ID=$(terraform output -raw cloudfront_distribution_id)
           aws cloudfront create-invalidation --distribution-id $DIST_ID --paths "/*"

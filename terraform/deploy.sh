@@ -80,11 +80,10 @@ aws s3 sync dist "s3://$BUCKET_NAME" --delete
 # 5. Invalidate CloudFront (Optional but recommended)
 # ---------------------------------------------------
 echo -e "${YELLOW}🔄 Invalidating CloudFront Cache...${NC}"
-# Get distribution ID from state (hacky but effective for local scripts)
-cd ../terraform
-DIST_ID=$(terraform state show aws_cloudfront_distribution.frontend_distribution | grep id | head -1 | awk '{print $3}' | tr -d '"')
+DIST_ID=$(terraform output -raw cloudfront_distribution_id 2>/dev/null)
 
-if [ -n "$DIST_ID" ]; then
+if [ -n "$DIST_ID" ] && [ "$DIST_ID" != "Warning: No outputs found" ]; then
+    echo "Distribution ID: $DIST_ID"
     aws cloudfront create-invalidation --distribution-id "$DIST_ID" --paths "/*"
     echo -e "${GREEN}✅ Invalidation started.${NC}"
 else
