@@ -1,0 +1,46 @@
+# General
+.DS_Store
+.env
+.env.*
+!.env.example
+*.log
+*.csv
+
+# VS Code
+.vscode/
+
+# Python / Backend
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+.coverage
+htmlcov/
+.pytest_cache/
+
+# AWS SAM
+.aws-sam/
+
+# Node / Frontend
+node_modules/
+dist/
+frontend/dist/
+frontend/coverage/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# LangChain/OpenAI
+.langchain/
+
+# Terraform
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform/tfplan
+terraform/*.tfvars
+!terraform/terraform.tfvars.example
+terraform/lambda_function.zip

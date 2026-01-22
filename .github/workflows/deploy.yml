@@ -1,0 +1,95 @@
+name: Deploy WanderAI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
+
+env:
+  AWS_REGION: us-east-1
+  TF_VERSION: 1.5.0
+  NODE_VERSION: 18
+  PYTHON_VERSION: 3.9
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # Backend Deployment via Terraform
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./terraform
+
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: ./terraform
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan -var="openai_api_key=${{ secrets.OPENAI_API_KEY }}"
+        working-directory: ./terraform
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main'
+        run: terraform apply -auto-approve tfplan
+        working-directory: ./terraform
+
+      # Frontend Build & Deploy
+      - name: Get Backend API URL & Bucket Name
+        if: github.ref == 'refs/heads/main'
+        id: tf-outputs
+        working-directory: ./terraform
+        run: |
+          echo "API_URL=$(terraform output -raw api_endpoint)" >> $GITHUB_ENV
+          echo "BUCKET_NAME=$(terraform output -raw frontend_bucket_name)" >> $GITHUB_ENV
+
+      - name: Build Frontend
+        if: github.ref == 'refs/heads/main'
+        working-directory: ./frontend
+        run: |
+          npm install
+          # Create .env file for build
+          echo "VITE_API_URL=${{ env.API_URL }}" > .env
+          npm run build
+
+      - name: Sync to S3
+        if: github.ref == 'refs/heads/main'
+        run: |
+          aws s3 sync ./frontend/dist s3://${{ env.BUCKET_NAME }} --delete
+
+      - name: Invalidate CloudFront
+        if: github.ref == 'refs/heads/main'
+        working-directory: ./terraform
+        run: |
+          DIST_ID=$(terraform state show aws_cloudfront_distribution.frontend_distribution | grep id | head -1 | awk '{print $3}' | tr -d '"')
+          aws cloudfront create-invalidation --distribution-id $DIST_ID --paths "/*"
