@@ -47,8 +47,10 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       # Backend Deployment via Terraform
-      - name: Create Backend Build Directory
-        run: mkdir -p ./backend/build
+      - name: Install Backend Dependencies
+        run: |
+          mkdir -p ./backend/build
+          pip install -r ./backend/src/requirements.txt -t ./backend/build
 
       - name: Terraform Init
         run: terraform init
